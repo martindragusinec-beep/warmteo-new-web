@@ -170,10 +170,10 @@
       caret-color:#ffd60a;
     }
 
-    /* Aktion sticky bar – desktop only */
-    .aktion-sticky{display:none}
+    /* Aktion / Partner sticky offer — desktop only; inline display in JSX would otherwise override plain display:none */
+    .aktion-sticky{display:none !important;}
     @media (min-width: 1025px){
-      .aktion-sticky{display:flex !important}
+      .aktion-sticky{display:flex !important;}
     }
     .aktion-sticky:hover{
       box-shadow:0 0 0 6px rgba(255,214,10,0.40), 0 28px 64px -16px rgba(0,0,0,0.5) !important;

@@ -131,6 +131,7 @@ function RealityCard({ it }) {
 
 function RealitySection() {
   const [paused, setPaused] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [dragX, setDragX] = useState(0); // accumulated user offset in px
   const dragRef = React.useRef({ active: false, startX: 0, baseX: 0, moved: false });
   const trackRef = React.useRef(null);
@@ -187,9 +188,12 @@ function RealitySection() {
   }, [scheduleResumeAfterInput]);
 
   const onPointerDown = (e) => {
+    if (e.button !== 0) return;
     clearInputResume();
     dragRef.current = { active: true, startX: e.clientX, baseX: dragX, moved: false };
+    setDragging(true);
     setPaused(true);
+    e.preventDefault();
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };
   const onPointerMove = (e) => {
@@ -198,9 +202,11 @@ function RealitySection() {
     if (Math.abs(dx) > 3) dragRef.current.moved = true;
     setDragX(wrapDrag(dragRef.current.baseX + dx));
   };
-  const onPointerUp = (e) => {
+  const endPointerDrag = (e) => {
+    if (!dragRef.current.active) return;
     dragRef.current.active = false;
-    e.currentTarget.releasePointerCapture?.(e.pointerId);
+    setDragging(false);
+    e?.currentTarget?.releasePointerCapture?.(e.pointerId);
     setTimeout(() => {
       if (!mouseInsideRef.current) setPaused(false);
     }, 600);
@@ -264,7 +270,7 @@ function RealitySection() {
         ref={carouselRef}
         className="reality-carousel"
         role="region"
-        aria-label="Referenzfotos — mit Mausrad oder Pfeiltasten bewegen (zuerst Tab)"
+        aria-label="Referenzfotos — seitwärts mit der Maus ziehen (oder Mausrad / Pfeiltasten nach Tab)"
         tabIndex={0}
         onKeyDown={onCarouselKeyDown}
         onMouseEnter={() => {
@@ -277,15 +283,25 @@ function RealitySection() {
         }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
+        onPointerUp={endPointerDrag}
+        onPointerCancel={endPointerDrag}
+        onLostPointerCapture={() => {
+          if (!dragRef.current.active) return;
+          dragRef.current.active = false;
+          setDragging(false);
+        }}
         style={{
           position: 'relative',
           maskImage: 'linear-gradient(90deg, transparent 0, black 60px, black calc(100% - 60px), transparent 100%)',
           WebkitMaskImage: 'linear-gradient(90deg, transparent 0, black 60px, black calc(100% - 60px), transparent 100%)',
-          cursor: dragRef.current.active ? 'grabbing' : 'grab',
-          touchAction: 'pan-y',
-          userSelect: 'none',
+          cursor: dragging ? 'grabbing' : 'grab',
+          touchAction: 'none',
+          WebkitUserSelect: 'none', userSelect: 'none',
+        }}>
+        <div style={{
+          transform: `translateX(${dragX}px)`,
+          width: 'max-content',
+          /* Drag und Auto-Animation trennen: Äußeres translate (Hand), inneres nur Keyframes */
         }}>
         <div
           ref={trackRef}
@@ -293,9 +309,9 @@ function RealitySection() {
           style={{
             display: 'flex', gap: 16, width: 'max-content',
             paddingLeft: 32,
-            transform: `translateX(${dragX}px)`,
           }}>
           {items.map((it, i) => <RealityCard key={i} it={it} />)}
+        </div>
         </div>
       </div>
     </section>
@@ -757,7 +773,18 @@ const costItem = (color, dark = false) => ({
 
 // ────────── 05 · PROOF — Logos & Realisations ──────────
 function ProofSection({ variant, onCTA }) {
-  const brands = ['Viessmann', 'Vaillant', 'Bosch', 'Daikin', 'Mitsubishi', 'Panasonic', 'Stiebel Eltron', 'Wolf'];
+  /** Marken-Logos als lokale SVGs (teilw. Wikimedia Commons; Mitsubishi/Panasonic Simple Icons). */
+  const brands = [
+    { name: 'Viessmann', logo: 'assets/brands/viessmann.svg' },
+    { name: 'Vaillant', logo: 'assets/brands/vaillant.svg' },
+    { name: 'Bosch', logo: 'assets/brands/bosch.svg' },
+    { name: 'Daikin', logo: 'assets/brands/daikin.svg' },
+    { name: 'Mitsubishi Electric', logo: 'assets/brands/mitsubishi.svg' },
+    { name: 'Panasonic', logo: 'assets/brands/panasonic.svg' },
+    { name: 'Buderus', logo: 'assets/brands/buderus.png' },
+    // Kein Logo — Platzhalter wie „u. a.“
+    { name: 'Weitere Marken', more: true },
+  ];
   const cases = [
     {
       city: 'Außen',
@@ -829,18 +856,50 @@ function ProofSection({ variant, onCTA }) {
           border: `1px solid ${WARMTEO.line}`, marginBottom: 80,
         }} className="brand-grid">
           {brands.map((b, i) => (
-            <div key={b} style={{
+            <div key={b.name} style={{
               borderRight: (i + 1) % 4 !== 0 ? `1px solid ${WARMTEO.line}` : 'none',
               borderBottom: i < 4 ? `1px solid ${WARMTEO.line}` : 'none',
-              padding: '28px 24px',
+              padding: '22px 18px',
+              minHeight: 88,
               display: 'grid', placeItems: 'center',
-              fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18,
-              color: WARMTEO.ink, letterSpacing: '-0.01em',
               transition: 'background 0.2s',
             }}
-              onMouseEnter={(e) => e.currentTarget.style.background = WARMTEO.bone}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-            >{b}</div>
+              onMouseEnter={(e) => { e.currentTarget.style.background = WARMTEO.bone; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+            >
+              {b.more ? (
+                <p style={{
+                  margin: 0,
+                  maxWidth: '12em',
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: 16,
+                  lineHeight: 1.25,
+                  letterSpacing: '-0.015em',
+                  color: WARMTEO.ink3,
+                  textAlign: 'center',
+                }}>
+                  u. a.<br />weitere Marken
+                </p>
+              ) : (
+              <img
+                src={b.logo}
+                alt={b.name}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+                className="brand-logo-img"
+                style={{
+                  maxWidth: 'min(160px, 100%)',
+                  maxHeight: 44,
+                  width: 'auto',
+                  height: 'auto',
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
+              />
+              )}
+            </div>
           ))}
         </div>
 
@@ -924,7 +983,7 @@ function FAQSection() {
     { q: 'In welchen Regionen sind Sie aktiv?', a: 'Bundesweit — alle 16 Bundesländer. Unsere Crews sind über DE verteilt; Anfahrt und Übernachtung sind im Tagessatz enthalten.' },
     { q: 'Wie läuft die erste Zusammenarbeit ab?', a: 'Kurzes Telefonat oder WhatsApp · Kapazitäts-Check und Region-Abgleich · erster Probe-Einsatz · danach Rahmenvertrag mit fixen Konditionen.' },
     { q: 'Was kostet eine Montage konkret?', a: 'Pay-per-Anlage ab 5.000 € netto, je nach Modell und Aufwand. Bei Volumen ab 5 Anlagen/Monat gibt es Staffelpreise. Keine Fixkosten, keine Bereitschaftspauschale.' },
-    { q: 'Welche Marken montieren Sie?', a: 'Alle gängigen DE-Hersteller: Viessmann, Vaillant, Bosch, Daikin, Mitsubishi, Panasonic, Stiebel Eltron, Wolf u.a.' },
+    { q: 'Welche Marken montieren Sie?', a: 'Alle gängigen DE-Hersteller: Viessmann, Vaillant, Bosch, Daikin, Mitsubishi, Panasonic, Buderus, Wolf u.a.' },
     { q: 'Wie ist das mit Reklamationen?', a: 'Wir übernehmen die volle Verantwortung für die Montagequalität. Reklamationen werden binnen 5 Werktagen vor Ort geprüft und behoben — ohne Zusatzkosten.' },
   ];
   const [open, setOpen] = useState(new Set([0, 1]));

@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/Warmteo Landing.html" },
+    { "source": "/index.html", "destination": "/Warmteo Landing.html" }
+  ]
+}

@@ -15,6 +15,11 @@
       --font-mono: 'JetBrains Mono', ui-monospace, monospace;
     }
     *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+    }
+    #realitaet,#vergleich,#proof,#faq,#form{scroll-margin-top:96px}
     html,body{margin:0;padding:0;background:#f6f6f4;color:#0b0d11;font-family:var(--font-sans);font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}
     /* softer corners across the page */
     .photo-slot{border-radius:18px}

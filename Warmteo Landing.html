@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Warmteo — Montagekapazität für Wärmepumpen in Deutschland</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" href="assets/hero-bg.avif" as="image" type="image/avif" />
+  <style>
+    :root{
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#f6f6f4;color:#0b0d11;font-family:var(--font-sans);font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}
+    /* softer corners across the page */
+    .photo-slot{border-radius:18px}
+    button{border-radius:14px}
+    input,textarea,select{border-radius:12px}
+    .reality-bento > *{border-radius:18px !important;overflow:hidden}
+    .case-grid > article{border-radius:18px;overflow:hidden}
+    .brand-grid{border-radius:18px;overflow:hidden}
+    .vol-grid > button{border-radius:14px !important}
+    @keyframes cost-shake{
+      0%,100%{transform:translateX(0)}
+      15%{transform:translateX(-6px)}
+      30%{transform:translateX(5px)}
+      45%{transform:translateX(-3px)}
+      60%{transform:translateX(2px)}
+      75%{transform:translateX(-1px)}
+    }
+    @keyframes cost-win-pulse{
+      0%,100%{transform:rotate(-6deg) scale(1.1)}
+      50%{transform:rotate(-6deg) scale(1.18)}
+    }
+    .round-card{border-radius:22px !important;overflow:hidden}
+    .round-md{border-radius:14px !important}
+    .round-pill{border-radius:999px !important}
+    button,input,textarea{font-family:inherit}
+    a{color:inherit}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.55;transform:scale(1.4)}}
+    @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+    .fade-up{animation:fadeUp 0.6s ease both}
+
+    /* Hero background: AVIF + JPEG fallback */
+    .hero-bg{
+      background-color:#0b0d11;
+      background-image:url(assets/hero-bg.jpg);
+      background-size:cover;
+      background-position:left center;
+      background-repeat:no-repeat;
+      background-image:-webkit-image-set(
+        url("assets/hero-bg.avif") type("image/avif"),
+        url("assets/hero-bg.jpg") type("image/jpeg")
+      );
+      background-image:image-set(
+        url("assets/hero-bg.avif") type("image/avif"),
+        url("assets/hero-bg.jpg") type("image/jpeg")
+      );
+      /* promote own compositor layer — can reduce blurry scaling in some browsers */
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+
+    /* responsive */
+    @media (max-width: 1024px){
+      .hero-grid{grid-template-columns:1fr !important;gap:40px !important}
+      .hd-nav-links a{display:none !important}
+      .reality-bento{grid-template-columns:repeat(6,1fr) !important}
+      .cost-grid{grid-template-columns:1fr !important}
+      .case-grid{grid-template-columns:repeat(2,1fr) !important}
+      .brand-grid{grid-template-columns:repeat(2,1fr) !important}
+    }
+    @media (max-width: 640px){
+      .vol-grid{grid-template-columns:repeat(2,1fr) !important}
+      .case-grid{grid-template-columns:1fr !important}
+      .form-row{grid-template-columns:1fr !important}
+      .footer-cols{grid-template-columns:1fr 1fr !important;gap:28px !important}
+      .hd-nav-links{display:none !important}
+      .hd-bar-cta{display:none !important}
+      .hd-bar{
+        display:flex !important;
+        justify-content:center !important;
+        gap:16px;
+      }
+      .cmp-switch{min-width:0 !important;width:100% !important}
+      .cmp-card{min-height:0 !important}
+      .cmp-face{position:relative !important;width:100% !important;height:200px !important;opacity:0.7 !important}
+      .cmp-list{position:relative !important;width:100% !important;padding:32px 24px !important}
+      .cmp-stamp{top:14px !important;left:14px !important;font-size:14px !important;padding:5px 10px !important}
+      .cost-stamp{font-size:11px !important;padding:4px 8px !important;top:14px !important;right:14px !important;letter-spacing:0.06em !important;border-width:2px !important}
+      [data-cost-stamp-win]{font-size:11px !important;padding:4px 8px !important;top:14px !important;right:14px !important;letter-spacing:0.06em !important;border-width:2px !important}
+      .mobile-cta-bar{display:flex !important}
+      body{padding-bottom:80px}
+    }
+    @media (max-width: 480px){
+      .footer-cols{grid-template-columns:1fr !important}
+    }
+    @media (max-width: 880px) and (min-width: 641px){
+      .footer-cols{grid-template-columns:1fr 1fr !important}
+    }
+
+    /* Form chip / pill hovers */
+    .vol-card{transition:all 0.18s ease}
+    .vol-card:hover{
+      background:rgba(255,214,10,0.10) !important;
+      border-color:rgba(255,214,10,0.55) !important;
+      transform:translateY(-2px);
+    }
+    .vol-card[data-active="1"]:hover{
+      transform:translateY(-2px) scale(1.02);
+    }
+    .land-card{transition:all 0.18s ease}
+    .land-card:hover{
+      background:rgba(255,214,10,0.10) !important;
+      border-color:rgba(255,214,10,0.55) !important;
+      transform:translateY(-1px);
+    }
+    .land-card[data-active="1"]:hover{transform:translateY(-1px) scale(1.02)}
+    .form-select{transition:border-color 0.18s ease, background 0.18s ease}
+    .form-select:hover{border-color:rgba(255,214,10,0.5) !important}
+    .form-select:focus{border-color:#ffd60a !important;outline:none}
+    .form-input{transition:border-color 0.18s ease, background 0.18s ease}
+    .form-input:hover{border-color:rgba(255,255,255,0.3) !important}
+    .form-input:focus{border-color:#ffd60a !important;background:rgba(255,255,255,0.04) !important}
+    .form-select option{background:#15171b;color:#fff}
+
+    /* FAQ cards */
+    .faq-card{transition:all 0.25s ease}
+    .faq-card:hover{
+      border-color:#0b0d11 !important;
+      background:#fff !important;
+      transform:translateY(-2px);
+      box-shadow:0 14px 32px -20px rgba(11,13,17,0.25);
+    }
+    .faq-card[data-open="1"]:hover{transform:translateY(-2px)}
+    .faq-card:hover .faq-plus{background:rgba(255,214,10,0.35) !important}
+    .faq-card[data-open="1"]:hover .faq-plus{background:#ffd60a !important}
+
+    /* Form input/select: prevent black tap-highlight on mobile + focus glow */
+    .form-input, .form-select{
+      -webkit-tap-highlight-color:transparent;
+      -webkit-text-fill-color:#fff;
+      caret-color:#ffd60a;
+      color:#fff !important;
+    }
+    .form-input:active, .form-select:active,
+    .form-input:focus, .form-select:focus{
+      -webkit-text-fill-color:#fff !important;
+      color:#fff !important;
+      outline:none;
+    }
+    .form-input:focus, .form-select:focus{
+      border-color:#ffd60a !important;
+      background:rgba(255,255,255,0.04) !important;
+      box-shadow:0 0 0 3px rgba(255,214,10,0.18);
+    }
+    .form-input::selection, .form-select::selection{
+      background:rgba(255,214,10,0.35);
+      color:#fff;
+    }
+    .form-input::placeholder{color:rgba(255,255,255,0.4)}
+    .form-input:-webkit-autofill, .form-input:-webkit-autofill:focus{
+      -webkit-text-fill-color:#fff !important;
+      -webkit-box-shadow:0 0 0 1000px #15171b inset !important;
+      caret-color:#ffd60a;
+    }
+
+    /* Aktion sticky bar – desktop only */
+    .aktion-sticky{display:none}
+    @media (min-width: 1025px){
+      .aktion-sticky{display:flex !important}
+    }
+    .aktion-sticky:hover{
+      box-shadow:0 0 0 6px rgba(255,214,10,0.40), 0 28px 64px -16px rgba(0,0,0,0.5) !important;
+      transform:translateY(-2px) !important;
+    }
+    .aktion-sticky-close:hover{
+      background:#0b0d11 !important;
+      color:#ffd60a !important;
+      border-color:#0b0d11 !important;
+    }
+
+    /* Land picker: desktop grid vs mobile select */
+    .land-select-mobile{display:none}
+    @media (max-width: 640px){
+      .land-grid-desktop{display:none !important}
+      .land-select-mobile{display:block !important}
+    }
+  </style>
+
+  <script>
+    // ── Make.com webhook URL — replace with real Scenario URL ──
+    // Receives JSON: { volume, land, plz, firma, name, email, phone, gdpr, variant, submittedAt, pageUrl, userAgent, referrer }
+    window.WARMTEO_WEBHOOK_URL = ""; // e.g. "https://hook.eu2.make.com/xxxxxxxxxxxx"
+  </script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="components.jsx"></script>
+  <script type="text/babel" src="hero.jsx"></script>
+  <script type="text/babel" src="sections.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <script type="text/babel">
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "variant": "partner"
+    }/*EDITMODE-END*/;
+
+    function App(){
+      const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+      const variant = t.variant === 'partner' ? 'partner' : 'aktion';
+
+      const scrollToForm = () => {
+        document.getElementById('form')?.scrollIntoView({behavior:'smooth', block:'start'});
+      };
+      const openWA = () => {
+        window.open('https://wa.me/?text=Hallo%20Justin%2C%20ich%20interessiere%20mich%20f%C3%BCr%20Montagekapazit%C3%A4t', '_blank');
+      };
+
+      return (
+        <div data-screen-label="Warmteo Landing">
+          <Header variant={variant} onCTA={scrollToForm} onVariantChange={(v) => setTweak('variant', v)} />
+          <main style={{paddingTop:0}}>
+            <Hero variant={variant} onCTA={scrollToForm} onWA={openWA} />
+            <ComparisonSection variant={variant} onCTA={scrollToForm} />
+            <RealitySection />
+            <CostSection variant={variant} onCTA={scrollToForm} />
+            <ProofSection variant={variant} onCTA={scrollToForm} />
+            <FAQSection />
+            <FormSection variant={variant} />
+          </main>
+          <Footer />
+
+          <AktionStickyBar variant={variant} onCTA={scrollToForm} />
+          <PartnerStickyBar variant={variant} onCTA={scrollToForm} />
+
+          {/* Sticky mobile CTA bar */}
+          <div className="mobile-cta-bar" style={{
+            position:'fixed', left:0, right:0, bottom:0, zIndex:90,
+            padding:'10px 12px calc(10px + env(safe-area-inset-bottom))',
+            background:'rgba(255,255,255,0.92)',
+            backdropFilter:'blur(14px) saturate(160%)',
+            WebkitBackdropFilter:'blur(14px) saturate(160%)',
+            borderTop:'1px solid rgba(11,13,17,0.1)',
+            display:'none',
+            gap:10, alignItems:'center',
+            boxShadow:'0 -8px 24px -8px rgba(0,0,0,0.12)',
+          }}>
+            <button onClick={scrollToForm} style={{
+              flex:1,
+              background:'#ffd60a', color:'#0b0d11',
+              border:'2px solid #0b0d11',
+              borderRadius:12,
+              padding:'14px 18px',
+              fontFamily:'var(--font-display)', fontWeight:700, fontSize:14,
+              boxShadow:'0 6px 18px -6px rgba(255,214,10,0.7)',
+              cursor:'pointer',
+              letterSpacing:'-0.005em',
+            }}>
+              {variant === 'aktion' ? 'Verfügbarkeit prüfen · 500 €' : 'Partner werden'}
+            </button>
+            <button onClick={openWA} aria-label="WhatsApp" style={{
+              flex:'0 0 auto',
+              width:50, height:50,
+              background:'#25D366', color:'#fff',
+              border:'2px solid #0b0d11',
+              borderRadius:12,
+              display:'grid', placeItems:'center',
+              cursor:'pointer',
+              boxShadow:'0 6px 18px -6px rgba(37,211,102,0.7)',
+            }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.83 9.83 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.82 11.82 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.82 11.82 0 0 0 20.464 3.488"/>
+              </svg>
+            </button>
+          </div>
+
+          <TweaksPanel>
+            <TweakSection label="Angebot" />
+            <TweakRadio
+              label="Variante"
+              value={variant}
+              options={[
+                {value:'aktion', label:'Aktion 500 €'},
+                {value:'partner', label:'Partner · 10.'},
+              ]}
+              onChange={(v) => setTweak('variant', v)}
+            />
+          </TweaksPanel>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

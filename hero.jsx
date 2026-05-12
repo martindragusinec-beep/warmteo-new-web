@@ -320,16 +320,9 @@ function Hero({ variant, onCTA, onWA }) {
       display: 'flex',
       alignItems: 'center',
     }}>
-      {/* Full-bleed hero art (black left + photo right in asset) */}
-      <div
-        className="hero-bg"
-        aria-hidden
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 0,
-        }}
-      />
+      {/* Zvlášť fotka (+ posun vpravo) + zvlášť gradient nad ní – přechod je vždycky vidět. */}
+      <div className="hero-bg-photo-layer" aria-hidden />
+      <div className="hero-bg-gradient" aria-hidden />
 
       <div style={{
         maxWidth: 1280, margin: '0 auto', padding: '64px 32px 96px',

@@ -25,7 +25,7 @@ const WARMTEO = {
 
 // ────────── Photo placeholder ──────────
 // "industrial striped" placeholder per default-aesthetic guidance
-function PhotoSlot({ label, ratio = '4/3', tone = 'dark', stamp, src, alt, className = '', style = {} }) {
+function PhotoSlot({ label, ratio = '4/3', tone = 'dark', stamp, src, alt, className = '', style = {}, objectPosition = 'center' }) {
   const isDark = tone === 'dark';
   const bg = isDark ? WARMTEO.ink2 : WARMTEO.bone2;
   const stripe = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
@@ -54,7 +54,7 @@ function PhotoSlot({ label, ratio = '4/3', tone = 'dark', stamp, src, alt, class
           decoding="async"
           style={{
             position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', objectPosition: 'center', display: 'block',
+            objectFit: 'cover', objectPosition, display: 'block',
           }}
         />
       )}

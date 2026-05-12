@@ -156,14 +156,6 @@ a{color:inherit}
   padding:64px 32px 72px;
   position:relative;overflow:hidden;
 }
-.legal-back-home::before{
-  content:"";position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-  background-size:48px 48px;
-  pointer-events:none;
-}
 .legal-back-home-inner{
   max-width:880px;margin:0 auto;
   position:relative;

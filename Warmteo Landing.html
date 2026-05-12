@@ -7,7 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="preload" href="assets/hero-bg.avif" as="image" type="image/avif" />
+  <link rel="preload" href="assets/hero-bg.avif?v=w3hero-desk-v6" as="image" type="image/avif" />
+  <link rel="preload" href="assets/hero-bg-mobile.png?v=w3hero-mbl-v2" as="image" media="(max-width: 640px)" />
   <style>
     :root{
       --font-sans: 'Inter', system-ui, sans-serif;
@@ -50,25 +51,68 @@
     @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
     .fade-up{animation:fadeUp 0.6s ease both}
+    @keyframes form-guide-nudge{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(10px)}
+    }
+    .form-guide-wrap{
+      display:flex;justify-content:center;width:100%;color:#ffd60a;margin:0 0 28px;
+    }
+    .form-guide-arrow{
+      display:block;
+      animation:form-guide-nudge 1.35s ease-in-out infinite;
+      filter:drop-shadow(0 0 12px rgba(255,214,10,0.35));
+    }
+    @media (prefers-reduced-motion:reduce){
+      .form-guide-arrow{animation:none}
+    }
+    @keyframes form-slot-pulse{
+      0%,100%{transform:scale(1);text-shadow:0 0 14px rgba(255,214,10,0.45)}
+      50%{transform:scale(1.06);text-shadow:0 0 26px rgba(255,214,10,0.75)}
+    }
+    .form-slot-pulse{
+      display:inline-block;
+      color:#ffd60a;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      animation:form-slot-pulse 1.85s ease-in-out infinite;
+      will-change:transform;
+    }
+    @media (prefers-reduced-motion:reduce){
+      .form-slot-pulse{animation:none;text-shadow:0 0 16px rgba(255,214,10,0.4)}
+    }
 
-    /* Hero background: AVIF + JPEG fallback */
-    .hero-bg{
+    /* Desktop: nový obrázek s ručním horizontálním gradientem — přilepený DOLŮ; jen svislé ztmavení ze shora. */
+    .hero-bg-photo-layer{
+      position:absolute;
+      inset:0;
+      z-index:0;
       background-color:#0b0d11;
-      background-image:url(assets/hero-bg.jpg);
-      background-size:cover;
-      background-position:left center;
-      background-repeat:no-repeat;
-      background-image:-webkit-image-set(
-        url("assets/hero-bg.avif") type("image/avif"),
-        url("assets/hero-bg.jpg") type("image/jpeg")
-      );
+      background-image:url("assets/hero-bg.png?v=w3hero-desk-v6");
       background-image:image-set(
-        url("assets/hero-bg.avif") type("image/avif"),
-        url("assets/hero-bg.jpg") type("image/jpeg")
+        url("assets/hero-bg.avif?v=w3hero-desk-v6") type("image/avif"),
+        url("assets/hero-bg.png?v=w3hero-desk-v6") type("image/png")
       );
-      /* promote own compositor layer — can reduce blurry scaling in some browsers */
-      transform: translateZ(0);
-      backface-visibility: hidden;
+      background-repeat:no-repeat;
+      background-position:right bottom;
+      background-size:contain;
+      transform:translateZ(0);
+      backface-visibility:hidden;
+    }
+    /* Desktop překryv ze shora — pod hlavičkou / nápisy, bez vedlejšího „drásání“ obrázku. */
+    .hero-bg-gradient{
+      position:absolute;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      background:linear-gradient(
+        180deg,
+        rgba(11,13,17,0.92) 0%,
+        rgba(11,13,17,0.55) 14%,
+        rgba(11,13,17,0.20) 28%,
+        rgba(11,13,17,0.06) 40%,
+        rgba(11,13,17,0) 56%
+      );
     }
 
     /* responsive */
@@ -80,7 +124,39 @@
       .case-grid{grid-template-columns:repeat(2,1fr) !important}
       .brand-grid{grid-template-columns:repeat(2,1fr) !important}
     }
+    /* Tablet mezi mobil a desktop — landscape hero s „contain“ působí prázd/not aligned; použijeme cover + kotvu na postavy vpravo. */
+    @media (max-width: 1024px) and (min-width: 641px){
+      .hero-bg-photo-layer{
+        background-size:cover;
+        background-position:78% center;
+      }
+      .hero-bg-gradient{
+        background:linear-gradient(
+          180deg,
+          rgba(11,13,17,0.94) 0%,
+          rgba(11,13,17,0.58) 16%,
+          rgba(11,13,17,0.22) 32%,
+          rgba(11,13,17,0.06) 48%,
+          rgba(11,13,17,0) 58%
+        );
+      }
+    }
     @media (max-width: 640px){
+      /* Portrétní snímek — cover přes celý hero (plná šířka, bez postranních mezer), kotva dolů. */
+      .hero-bg-photo-layer{
+        background-image:url("assets/hero-bg-mobile.png?v=w3hero-mbl-v2");
+        background-position:center bottom;
+        background-size:cover;
+      }
+      /* Jen lehký kódový gradient pod fixní hlavičkou (grafika už má svůj horní blok). */
+      .hero-bg-gradient{
+        background:linear-gradient(
+          180deg,
+          rgba(11,13,17,0.42) 0%,
+          rgba(11,13,17,0.16) max(72px, 10vh),
+          rgba(11,13,17,0) 26%
+        );
+      }
       .vol-grid{grid-template-columns:repeat(2,1fr) !important}
       .case-grid{grid-template-columns:1fr !important}
       .form-row{grid-template-columns:1fr !important}
@@ -210,10 +286,10 @@
 <body>
   <div id="root"></div>
 
-  <script type="text/babel" src="components.jsx"></script>
-  <script type="text/babel" src="hero.jsx"></script>
-  <script type="text/babel" src="sections.jsx"></script>
-  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="components.jsx?v=w3-20260516"></script>
+  <script type="text/babel" src="hero.jsx?v=w3-20260519"></script>
+  <script type="text/babel" src="sections.jsx?v=w3-20260520e"></script>
+  <script type="text/babel" src="tweaks-panel.jsx?v=w3-20260516"></script>
 
   <script type="text/babel">
     const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -239,9 +315,9 @@
             <ComparisonSection variant={variant} onCTA={scrollToForm} />
             <RealitySection />
             <CostSection variant={variant} onCTA={scrollToForm} />
+            <FormSection variant={variant} />
             <ProofSection variant={variant} onCTA={scrollToForm} />
             <FAQSection />
-            <FormSection variant={variant} />
           </main>
           <Footer />
 

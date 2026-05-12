@@ -1,26 +1,35 @@
 // Warmteo LP — Sections: Reality (team), Comparison, Cost-vs-Internal, Proof, FAQ, Form
 
+/** Query na lokální JPG/PNG: Browser cachuje / starý `sections.jsx` sonst keine neuen Fotos. Bei Asset-Tausch hochsetzen. */
+const ASSET_BUST = '?v=w3-20260520e';
+const bust = (path) => (path && path.includes('?') ? path : path + ASSET_BUST);
+
 // ────────── 02 · REALITY (Team + Realisations merged) ──────────
 const REALITY_ITEMS = [
   { kind: 'photo', label: 'Markus · Team-Lead', stamp: 'TEAM-LEAD', big: true,
-    quote: '„Wir reden nicht.\nWir schrauben."' },
-  { kind: 'photo', label: 'Außenmodul · Kältemittelkreis', stamp: 'SERVICE',
-    meta: 'Manifold · Ventil · saubere Verrohrung',
-    src: 'assets/realitaet-waermepumpe-aussen.png',
-    alt: 'Monteurarbeit am geöffneten Außenmodul einer Wärmepumpe: Kupferrohre, Messingarmatur und angekoppeltes Manifold mit farbigen Schläuchen.' },
+    quote: '„Wir reden nicht.\nWir schrauben."',
+    src: 'assets/realitaet-monteur-waermepumpen-aussen.png',
+    alt: 'Monteur in gelbem Shirt und schwarzer Arbeitslatzhose lehnt entspannt an einer schwarzen Luft-Wasser-Wärmepumpe vor modernem Haus mit Rasen — freundlicher Blick in die Kamera.',
+    objectPosition: 'center 42%',
+  },
+  { kind: 'photo', label: 'Vaillant · aroTHERM plus', stamp: '2× AUSSENEINHEIT',
+    meta: 'Zwei Luft-Wasser-Außeneinheiten auf Ortbeton — ausgerichtet, entkoppelt, dokumentiert montiert.',
+    src: 'assets/realitaet-vaillant-arotherm-duo-aussen.jpg',
+    alt: 'Parallele Außenaufstellung zweier Vaillant aroTHERM plus Luft-Wasser-Wärmepumpen auf Betonfundamenten mit Schwingungsdämpfern; dahinter dunkles Trapezblech, Gartenumfeld.',
+    objectPosition: 'center 56%',
+  },
   { kind: 'spec', label: 'CREW SETUP', big: '4', sub: '× Monteure', tail: 'pro Einsatzteam · zertifiziert' },
-  { kind: 'photo', label: 'Ventilgang · Außenmodul', stamp: 'DETAIL · WP',
-    meta: 'Präzisionsarbeit · Kupfer · dokumentiert',
-    src: 'assets/realitaet-waermepumpe-armatur.png',
-    alt: 'Nahaufnahme: Zwei Hände mit Rollgabelschlüssel an Messingarmatur im geöffneten Außenmodul; Kupferrohre und Manometer-Schläuche.' },
   { kind: 'photo', label: 'Wechselrichter · String-Anschluss', stamp: 'PV · DETAIL',
     meta: 'Beschriftete Leitungen · saubere Arbeit',
     src: 'assets/realitaet-pv-verkabelung.png',
     alt: 'Monteur steckt schwarze Solarkabel mit MC4-Steckern unter einen weißen Wechselrichter; beschriftete Leitungsetiketten.' },
   { kind: 'stat', label: 'LIVE · DE', big: '14', sub: 'Crews · DE', signal: true },
-  { kind: 'photo', label: 'Lieferwagen · Nacht-Hub', stamp: 'LOGISTIK',
-    src: 'assets/realitaet-logistik.png',
-    alt: 'Lieferwagen mit Solarmodulen und Montagematerial am Lager bei Nacht; Mitarbeitender prüft die Ladung.' },
+  { kind: 'photo', label: 'Viessmann · Außeneinheit', stamp: 'L/W AUSSEN',
+    meta: 'Luft-Wasser-Gerät auf Kiesbett vor der Fassade — Leitungszuführungen und Aufstellfläche dokumentiert.',
+    src: 'assets/realitaet-viessmann-luft-wasser-aussen.jpg',
+    alt: 'Schwarze Viessmann-Außenluft-Wärmepumpe vor heller Hausfassade mit Kiesstreifen und kleinen Kellernfenstern.',
+    objectPosition: 'center 48%',
+  },
   { kind: 'photo', label: 'Außenmodul · Montage vor Ort', stamp: 'MONTAGE',
     meta: 'Geöffnete Baugruppe · Handschuhe · dokumentiert',
     src: 'assets/realitaet-wp-montage-aussen.png',
@@ -29,14 +38,28 @@ const REALITY_ITEMS = [
     meta: 'Ecodan Innenmodul · Speicher · gedämmte Verrohrung',
     src: 'assets/realitaet-ecodan-heizungsraum.png',
     alt: 'Heiztechnikraum mit Mitsubishi-Ecodan-Wandgerät, weißem Speicher, rotem Ausdehnungsgefäß und grau isolierter Rohrleitungsführung.' },
-  { kind: 'photo', label: 'Vaillant iQ · Heizzentrale', stamp: 'SAUBERE ARBEIT',
-    meta: 'Ordentliche Trassen · Speicher · Ausdehnungsgefäße',
-    src: 'assets/realitaet-vaillant-heizzentrale.png',
-    alt: 'Übersichtlicher Heiztechnik mit Vaillant-Gerät, grauen Pufferspeichern, mehreren Ausdehnungsgefäßen und strukturierter, isolierter Rohrleitung.' },
+  { kind: 'photo', label: 'Innenmodul · Heizwand', stamp: 'TECHNIKRAUM',
+    meta: 'Silbergedämmte Vorlauf-/Rücklaufstrassen, Armaturenzugänglichkeit und Kondensatführung — sauber an der Nassfliese ausgerichtet.',
+    src: 'assets/realitaet-innenmodul-verrohrung.jpg',
+    alt: 'Weisses Wand-Innengerät einer Wärmebereitung mit digitalem Farbdisplay, silberisolierter Verrohrung, roten Absperrkugelhähnen, seitlichem Pufferspeicher und Kondensattechnik unter dem Feld.',
+    objectPosition: 'center 45%',
+  },
   { kind: 'photo', label: 'NIBE F1145 · Bedienservice', stamp: 'INNENMODUL',
     meta: 'Farbdisplay · gedämmte Rohre · Manometer',
     src: 'assets/realitaet-nibe-f1145.png',
     alt: 'Techniker bedient die Steuerung einer weißen NIBE-Wärmepumpe F1145; im Hintergrund gedämmte Rohrleitungen, Manometer und weiterer Speicher.' },
+  { kind: 'photo', label: 'Schlieger · Puffer & Speicher', stamp: 'KELLER · HYDRAULIK',
+    meta: 'Zwei zylindrische Schlieger-Speicher mit Kupfer- und Kunststoffverrohrung, Ausdehnungsgefäßen und strukturierten Messstellen.',
+    src: 'assets/realitaet-schlieger-zwei-speicher-keller.png',
+    alt: 'Technikbereich mit zwei grossen beschichteten Speicherzylindern der Marke Schlieger; rotes Kugelausgleichsfass am Boden, weiteres Membranausgleichsgefäss an der Wand, Kupferverteilungen und Armaturenkreuz.',
+    objectPosition: 'center 42%',
+  },
+  { kind: 'photo', label: 'Heiztechnik · Pufferspeicher', stamp: 'EFH · REAL',
+    meta: 'Stehendes Speichervolumen mit Anschlussscheibe, isolierte Leitungstrassen zur Wandverteilung — realer Kellerraum unter Last.',
+    src: 'assets/realitaet-pufferspeicher-heizraum.jpg',
+    alt: 'Blick in einen bestehenden Heiztechnikraum: grosser vertikaler Pufferspeicher mit Anschlüssen und Manometer, rotes Ausdehnungsgefäss, Schaltschrank mit Sicherungen, Licht von einem Kellerfenster.',
+    objectPosition: 'center 44%',
+  },
 ];
 
 function RealityCard({ it }) {
@@ -53,7 +76,7 @@ function RealityCard({ it }) {
   if (it.kind === 'photo') {
     return (
       <div style={baseStyle}>
-        <PhotoSlot label={it.label} src={it.src} alt={it.alt} tone="dark" ratio="auto" style={{ height: '100%', borderRadius: 0 }} />
+        <PhotoSlot label={it.label} src={it.src ? bust(it.src) : undefined} alt={it.alt} objectPosition={it.objectPosition} tone="dark" ratio="auto" style={{ height: '100%', borderRadius: 0 }} />
         <div style={{
           position: 'absolute', inset: 0,
           background: 'linear-gradient(180deg, rgba(11,13,17,0.4) 0%, transparent 35%, transparent 60%, rgba(11,13,17,0.85) 100%)',
@@ -247,13 +270,6 @@ function RealitySection() {
           outline-offset: 4px;
         }
       `}</style>
-      <div style={{
-        position: 'absolute', inset: 0, opacity: 0.4, pointerEvents: 'none',
-        backgroundImage: `linear-gradient(${WARMTEO.lineDark} 1px, transparent 1px), linear-gradient(90deg, ${WARMTEO.lineDark} 1px, transparent 1px)`,
-        backgroundSize: '80px 80px',
-        maskImage: 'radial-gradient(ellipse at 70% 30%, black 20%, transparent 70%)',
-        WebkitMaskImage: 'radial-gradient(ellipse at 70% 30%, black 20%, transparent 70%)',
-      }} />
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 32px', position: 'relative', zIndex: 1 }}>
         <h2 style={headingStyle('dark')}>
           Echte Monteure.<br />
@@ -485,7 +501,7 @@ function ComparisonSection({ variant, onCTA }) {
           }}>
             {isProblem ? (
               <img
-                src="assets/comparison-stress.jpg"
+                src={bust('assets/comparison-stress.png')}
                 alt=""
                 style={{
                   position: 'absolute',
@@ -493,14 +509,14 @@ function ComparisonSection({ variant, onCTA }) {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  objectPosition: 'center 20%',
+                  objectPosition: 'center center',
                   display: 'block',
                 }}
                 decoding="async"
               />
             ) : (
               <img
-                src="assets/comparison-happy.jpg"
+                src={bust('assets/comparison-happy.png')}
                 alt=""
                 style={{
                   position: 'absolute',
@@ -508,7 +524,7 @@ function ComparisonSection({ variant, onCTA }) {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  objectPosition: 'center 20%',
+                  objectPosition: 'center center',
                   display: 'block',
                 }}
                 decoding="async"
@@ -823,6 +839,15 @@ function ProofSection({ variant, onCTA }) {
       days: 3,
     },
     {
+      city: 'TWW',
+      kw: 'Speicher',
+      img: 'assets/carousel-tank-silver.png',
+      model: 'Brauchwarmwasser-Speicher',
+      blurb: 'Stehendes Volumen im Technikraum — Zirkulation und Frischwasser sauber dokumentiert, Armaturen beschriftet, Übergabe unter Last möglich.',
+      type: 'Trinkwasser',
+      days: 2,
+    },
+    {
       city: 'Elektro',
       kw: 'PV+Speicher',
       img: 'assets/realisation-solar-battery.png',
@@ -883,7 +908,7 @@ function ProofSection({ variant, onCTA }) {
                 </p>
               ) : (
               <img
-                src={b.logo}
+                src={bust(b.logo)}
                 alt={b.name}
                 loading="lazy"
                 decoding="async"
@@ -923,7 +948,7 @@ function ProofSection({ variant, onCTA }) {
               <div style={{ position: 'relative', aspectRatio: '4/3', background: WARMTEO.bone2, overflow: 'hidden' }}>
                 {c.img ? (
                   <img
-                    src={c.img}
+                    src={bust(c.img)}
                     alt=""
                     loading="lazy"
                     decoding="async"
@@ -1187,25 +1212,77 @@ function FormSection({ variant }) {
   };
 
   const isAktion = variant === 'aktion';
-  const formCTA = isAktion ? 'Kapazität sichern · 500 € Bonus' : 'Partnerschaft anfragen';
+  const formCTA = isAktion ? 'Anfrage senden · 500 € Rabatt' : 'Partnerschaft anfragen';
 
   const volumes = ['1–5', '5–10', '10–20', '20+'];
 
+  const fc = isAktion ? {
+    title: (
+      <>
+        Aktuell <span className="form-slot-pulse">nur 1 Slot</span> für neue Partner.
+      </>
+    ),
+    lead: (
+      <>
+        Aktuell haben wir Kapazität für nur 1 neuen Partner. Sichern Sie sich Ihren Termin.{' '}
+        Für die <strong style={{ color: WARMTEO.signal }}>500&nbsp;€-Aktion</strong> füllen Sie die Schritte aus — Bestätigung binnen{' '}
+        <strong style={{ color: WARMTEO.signal }}>24&nbsp;Stunden</strong>.
+      </>
+    ),
+    step1: 'Schritt 1 · Monatliches Montagevolumen',
+    step2: 'Schritt 2 · Ihre Einsatzregion',
+    step3: 'Schritt 3 · Kontakt für Rabatt & Rückruf',
+    hStep1: 'Wie viele Anlagen pro Monat planen Sie?',
+    hStep2: 'In welchem Bundesland liegen Ihre Einsätze?',
+    hStep3: 'Wie erreichen wir Sie für Rabatt und Termin?',
+    successLead: (
+      <>
+        Wir prüfen Ihre Angaben und die Aktionsbedingungen — Rückruf in der Regel binnen{' '}
+        <strong style={{ color: WARMTEO.signal }}>24&nbsp;Stunden</strong>, meist per WhatsApp oder Telefon.
+      </>
+    ),
+  } : {
+    title: (
+      <>
+        Aktuell <span className="form-slot-pulse">nur 1 Slot</span> für neue Partner.
+      </>
+    ),
+    lead: (
+      <>
+        Aktuell haben wir Kapazität für nur 1 neuen Partner. Sichern Sie sich Ihren Termin.{' '}
+        Antwort binnen <strong style={{ color: WARMTEO.signal }}>24&nbsp;Stunden</strong>.
+      </>
+    ),
+    step1: 'Schritt 1 · Monatliches Volumen',
+    step2: 'Schritt 2 · Region der Einsätze',
+    step3: 'Schritt 3 · Kontakt',
+    hStep1: 'Wie viele Anlagen pro Monat?',
+    hStep2: 'In welchem Bundesland?',
+    hStep3: 'Wer ist Ihr Ansprechpartner?',
+    successLead: (
+      <>
+        Wir melden uns mit den nächsten Schritten zur Partnerschaft — in der Regel binnen{' '}
+        <strong style={{ color: WARMTEO.signal }}>24&nbsp;Stunden</strong>, meist per WhatsApp oder Telefon.
+      </>
+    ),
+  };
+
   return (
     <section id="form" style={{ background: WARMTEO.ink, color: '#fff', padding: '120px 32px', position: 'relative' }}>
-      <div style={{
-        position: 'absolute', inset: 0, opacity: 0.3, pointerEvents: 'none',
-        backgroundImage: `linear-gradient(${WARMTEO.lineDark} 1px, transparent 1px), linear-gradient(90deg, ${WARMTEO.lineDark} 1px, transparent 1px)`,
-        backgroundSize: '64px 64px',
-      }} />
       <div style={{ maxWidth: 980, margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <h2 style={{ ...headingStyle('dark'), marginBottom: 16 }}>
-          Aktuell <span style={{ color: WARMTEO.signal }}>nur 1 Slot</span> für<br />neue Partner — sichern Sie ihn.
+          {fc.title}
         </h2>
-        <p style={{ ...paraStyle('dark'), marginBottom: 48, maxWidth: 620 }}>
-          Aktuell haben wir Kapazität für nur 1 neuen Partner.
-          Sichern Sie sich Ihren Termin — Antwort binnen <strong style={{ color: WARMTEO.signal }}>24 Stunden</strong>.
+        <p style={{ ...paraStyle('dark'), marginBottom: 36, maxWidth: 620 }}>
+          {fc.lead}
         </p>
+
+        <div className="form-guide-wrap" aria-hidden="true">
+          <svg className="form-guide-arrow" width="48" height="58" viewBox="0 0 48 58" fill="none">
+            <path d="M12 14l12 13 12-13" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M12 29l12 13 12-13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+          </svg>
+        </div>
 
         <div style={{
           background: WARMTEO.ink2,
@@ -1235,8 +1312,8 @@ function FormSection({ variant }) {
 
           {step === 0 && (
             <div>
-              <div style={formLabel}>Schritt 1 · Monatliches Volumen</div>
-              <h3 style={formH}>Wie viele Anlagen pro Monat?</h3>
+              <div style={formLabel}>{fc.step1}</div>
+              <h3 style={formH}>{fc.hStep1}</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }} className="vol-grid">
                 {volumes.map((v) => {
                   const active = data.volume === v;
@@ -1270,8 +1347,8 @@ function FormSection({ variant }) {
 
           {step === 1 && (
             <div>
-              <div style={formLabel}>Schritt 2 · Region der Einsätze</div>
-              <h3 style={formH}>In welchem Bundesland?</h3>
+              <div style={formLabel}>{fc.step2}</div>
+              <h3 style={formH}>{fc.hStep2}</h3>
 
               {/* Desktop: grid karet s vlajkami */}
               <div className="land-grid-desktop" style={{
@@ -1345,8 +1422,8 @@ function FormSection({ variant }) {
 
           {step === 2 && (
             <div>
-              <div style={formLabel}>Schritt 3 · Kontakt</div>
-              <h3 style={formH}>Wer meldet sich bei Ihnen?</h3>
+              <div style={formLabel}>{fc.step3}</div>
+              <h3 style={formH}>{fc.hStep3}</h3>
               {submitState === 'success' ? (
                 <div style={{
                   padding: '32px 28px', borderRadius: 16,
@@ -1358,7 +1435,7 @@ function FormSection({ variant }) {
                     Danke, {data.name.split(' ')[0] || 'wir haben Ihre Anfrage'}!
                   </div>
                   <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14.5, lineHeight: 1.55 }}>
-                    Wir melden uns binnen <strong style={{ color: WARMTEO.signal }}>24 Stunden</strong> bei Ihnen — meist per WhatsApp oder Telefon.
+                    {fc.successLead}
                   </div>
                 </div>
               ) : (
@@ -1520,7 +1597,7 @@ function Footer() {
           <div>
             <div style={{ marginBottom: 16, lineHeight: 0 }}>
               <img
-                src="assets/warmteo-logo.png"
+                src={bust('assets/warmteo-logo.png')}
                 alt="Warmteo"
                 style={{ height: 56, width: 'auto', display: 'block' }}
                 decoding="async"

@@ -1,7 +1,7 @@
 // Warmteo LP — Sections: Reality (team), Comparison, Cost-vs-Internal, Proof, FAQ, Form
 
 /** Query na lokální JPG/PNG: Browser cachuje / starý `sections.jsx` sonst keine neuen Fotos. Bei Asset-Tausch hochsetzen. */
-const ASSET_BUST = '?v=w3-20260521';
+const ASSET_BUST = '?v=w3-20260521c';
 const bust = (path) => (path && path.includes('?') ? path : path + ASSET_BUST);
 
 /** Google reCAPTCHA v3 vor Absenden — liefert null ohne Site-Key (Demo). Secret niemals im Client. */
@@ -874,15 +874,6 @@ function ProofSection({ variant, onCTA }) {
       blurb: 'Übersichtliche Verdrahtung, Schutzorgane und saubere Trassenführung an der Wand.',
       type: 'SolarEdge · AC/DC',
       days: 4,
-    },
-    {
-      city: 'Innen',
-      kw: 'IVT',
-      img: 'assets/realisation-ivt-innen.png',
-      model: 'Innenstation Wärmepumpe',
-      blurb: 'IVT-Aufstellung mit Druckausgleich, Filtration und beschrifteter Hydraulik.',
-      type: 'Heizungsraum',
-      days: 3,
     },
   ];
 

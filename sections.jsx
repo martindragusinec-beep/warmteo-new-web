@@ -1,8 +1,27 @@
 // Warmteo LP — Sections: Reality (team), Comparison, Cost-vs-Internal, Proof, FAQ, Form
 
 /** Query na lokální JPG/PNG: Browser cachuje / starý `sections.jsx` sonst keine neuen Fotos. Bei Asset-Tausch hochsetzen. */
-const ASSET_BUST = '?v=w3-20260520e';
+const ASSET_BUST = '?v=w3-20260521';
 const bust = (path) => (path && path.includes('?') ? path : path + ASSET_BUST);
+
+/** Google reCAPTCHA v3 vor Absenden — liefert null ohne Site-Key (Demo). Secret niemals im Client. */
+async function fetchRecaptchaToken() {
+  const siteKey = (typeof window !== 'undefined' && (window.WARMTEO_RECAPTCHA_SITE_KEY || '').trim()) || '';
+  if (!siteKey) return null;
+  const deadline = Date.now() + 15000;
+  while (Date.now() < deadline) {
+    const gr = typeof window !== 'undefined' ? window.grecaptcha : undefined;
+    if (gr && typeof gr.ready === 'function') {
+      return new Promise((resolve, reject) => {
+        gr.ready(() => {
+          gr.execute(siteKey, { action: 'warmteo_form_submit' }).then(resolve).catch(reject);
+        });
+      });
+    }
+    await new Promise((r) => setTimeout(r, 80));
+  }
+  throw new Error('reCAPTCHA nicht geladen (Script blockiert?). Bitte Seite neu laden.');
+}
 
 // ────────── 02 · REALITY (Team + Realisations merged) ──────────
 const REALITY_ITEMS = [
@@ -1181,6 +1200,15 @@ function FormSection({ variant }) {
     setSubmitState('loading');
     setSubmitError('');
     const webhookUrl = (window.WARMTEO_WEBHOOK_URL || '').trim();
+    let recaptchaToken = null;
+    try {
+      recaptchaToken = await fetchRecaptchaToken();
+    } catch (capErr) {
+      console.error('[Warmteo Form] reCAPTCHA', capErr);
+      setSubmitError(capErr.message || 'reCAPTCHA');
+      setSubmitState('error');
+      return;
+    }
     const payload = {
       ...data,
       variant,
@@ -1188,6 +1216,7 @@ function FormSection({ variant }) {
       pageUrl: window.location.href,
       userAgent: navigator.userAgent,
       referrer: document.referrer || null,
+      ...(recaptchaToken ? { recaptchaToken } : {}),
     };
     try {
       if (!webhookUrl) {
@@ -1475,8 +1504,23 @@ function FormSection({ variant }) {
                     color: 'rgba(255,255,255,0.55)', marginTop: 6,
                   }}>
                     Mit dem Absenden willigen Sie ein, dass Ihre Angaben zur Bearbeitung der Anfrage gespeichert und verarbeitet werden. Details in der{' '}
-                    <a href="Datenschutz.html" target="_blank" style={{ color: WARMTEO.signal, textDecoration: 'underline' }}>Datenschutzerklärung</a>.
+                    <a href="Datenschutz.html" target="_blank" rel="noreferrer noopener" style={{ color: WARMTEO.signal, textDecoration: 'underline' }}>Datenschutzerklärung</a>.
                     Widerruf jederzeit per E-Mail an info@warmteo.de möglich.
+                  </div>
+                  <div style={{
+                    fontFamily: 'var(--font-sans)', fontSize: 12, lineHeight: 1.55,
+                    color: 'rgba(255,255,255,0.45)', marginTop: 14,
+                  }}>
+                    Zum Spam-Schutz nutzen wir{' '}
+                    <strong style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>Google reCAPTCHA</strong>{' '}
+                    (läuft im Hintergrund; kein sichtbarer Checkbox). Diese Website ist geschützt durch reCAPTCHA. Es gelten die{' '}
+                    <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer noopener" style={{ color: WARMTEO.signal, textDecoration: 'underline' }}>
+                      Datenschutzerklärung
+                    </a>{' '}und{' '}
+                    <a href="https://policies.google.com/terms" target="_blank" rel="noreferrer noopener" style={{ color: WARMTEO.signal, textDecoration: 'underline' }}>
+                      Nutzungsbedingungen
+                    </a>{' '}
+                    von Google.
                   </div>
                 </div>
               )}

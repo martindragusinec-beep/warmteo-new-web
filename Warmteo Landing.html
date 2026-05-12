@@ -272,12 +272,20 @@
       .land-grid-desktop{display:none !important}
       .land-select-mobile{display:block !important}
     }
+
+    /* reCAPTCHA v3 — Badge verborgen; Ersatz-Hinweis im Formular Pflicht (Google Bedingungen) */
+    .grecaptcha-badge{
+      visibility:hidden !important;
+    }
   </style>
 
+  <script async defer src="https://www.google.com/recaptcha/api.js?render=6LcV99YsAAAAAK4pkCiRj_fAh-SYb87ppjQ_9kqT"></script>
   <script>
     // ── Make.com webhook URL — replace with real Scenario URL ──
-    // Receives JSON: { volume, land, plz, firma, name, email, phone, gdpr, variant, submittedAt, pageUrl, userAgent, referrer }
+    // Receives JSON: { ..., recaptchaToken?, submittedAt, pageUrl, userAgent, referrer }
+    // reCAPTCHA: Secret Key nur auf dem Server/Make-Szenario (siteverify API) — niemals ins Frontend.
     window.WARMTEO_WEBHOOK_URL = ""; // e.g. "https://hook.eu2.make.com/xxxxxxxxxxxx"
+    window.WARMTEO_RECAPTCHA_SITE_KEY = "6LcV99YsAAAAAK4pkCiRj_fAh-SYb87ppjQ_9kqT";
   </script>
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
@@ -288,7 +296,7 @@
 
   <script type="text/babel" src="components.jsx?v=w3-20260516"></script>
   <script type="text/babel" src="hero.jsx?v=w3-20260519"></script>
-  <script type="text/babel" src="sections.jsx?v=w3-20260520e"></script>
+  <script type="text/babel" src="sections.jsx?v=w3-20260521"></script>
   <script type="text/babel" src="tweaks-panel.jsx?v=w3-20260516"></script>
 
   <script type="text/babel">
